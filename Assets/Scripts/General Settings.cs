@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using System.Threading;
 
 public class GeneralSettings : MonoBehaviour
 {
@@ -21,10 +22,11 @@ public class GeneralSettings : MonoBehaviour
     [SerializeField] Button _clearb;
     [SerializeField] Button _testb;
     [SerializeField] Button _resultb;
+    [SerializeField] Toggle _realTime;
     [SerializeField] TextMeshProUGUI _timeText;
     [SerializeField] TextMeshProUGUI _permutationText;
     [SerializeField] public TextMeshProUGUI WaitText;
-    [SerializeField] Toggle _realTime;
+    TextWriter tw;
 
     [SerializeField] int _sizeMas;
     [SerializeField] int _countSort = 0;
@@ -35,6 +37,7 @@ public class GeneralSettings : MonoBehaviour
     [SerializeField] double _minEndTimeSort = double.MaxValue;
     [SerializeField] double _maxEndTimeSort = 0d;
     [SerializeField] string _statistic;
+    [SerializeField] string _pathResult;
 
     [SerializeField] public bool StopSort = false;
     [SerializeField] public int CountPermutation;
@@ -45,8 +48,11 @@ public class GeneralSettings : MonoBehaviour
         sortSpeed.gameObject.SetActive(_realTime.isOn);
         _stopb.enabled = false;
         _clearb.enabled = false;
+        _pathResult = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "/Statistic.csv";
+        Debug.Log(_pathResult);
+        if (!File.Exists(_pathResult)) _resultb.enabled = false;
     }
-
+    //=============================================================Mas and Graph=============================================================
     public void UpdateTime()
     {
         _sorting.TimeEditGraph = 1 - sortSpeed.value;
@@ -122,7 +128,7 @@ public class GeneralSettings : MonoBehaviour
             _arr.Add(UnityEngine.Random.Range(-_sizeMas, _sizeMas));
         }
     }
-
+    //=============================================================Sorting=============================================================
     public void StopSorting()
     {
         StopSort = true;
@@ -152,7 +158,7 @@ public class GeneralSettings : MonoBehaviour
         sortSpeed.gameObject.SetActive(_realTime.isOn);
         _testb.enabled = _countTests.enabled = !_realTime.isOn;
     }
-
+    //=============================================================Statistic=============================================================
     private void UpdateStats()
     {
         ++_countSort;
@@ -174,8 +180,8 @@ public class GeneralSettings : MonoBehaviour
 
     private string UnitOfTime()
     {
-        if (_realTime.isOn) return " сек.\n";
-        else return " нс.\n";
+        if (_realTime.isOn) return " СЃРµРє.\n";
+        else return " РЅСЃ.\n";
     }
 
     public void EditStatistic()
@@ -186,33 +192,33 @@ public class GeneralSettings : MonoBehaviour
         {
             UpdateStats();
 
-            _permutationText.text = "Перестановки: " + CountPermutation;
-            if (_realTime.isOn) _timeText.text = "Время: " + (float)EndTimeSort + UnitOfTime()
-                + "Среднее: " + (float)_totalEndTimeSort / _countSort + UnitOfTime()
-                + "Минимальное: " + (float)_minEndTimeSort + UnitOfTime()
-                + "Максимальное: " + (float)_maxEndTimeSort + UnitOfTime();
-            else _timeText.text = "Время: " + EndTimeSort + UnitOfTime()
-                + "Среднее: " + _totalEndTimeSort / _countSort + UnitOfTime()
-                + "Минимальное: " + _minEndTimeSort + UnitOfTime()
-                + "Максимальное: " + _maxEndTimeSort + UnitOfTime();
+            _permutationText.text = "РџРµСЂРµСЃС‚Р°РЅРѕРІРєРё: " + CountPermutation;
+            if (_realTime.isOn) _timeText.text = "Р’СЂРµРјСЏ: " + (float)EndTimeSort + UnitOfTime()
+                + "РЎСЂРµРґРЅРµРµ: " + (float)_totalEndTimeSort / _countSort + UnitOfTime()
+                + "РњРёРЅРёРјР°Р»СЊРЅРѕРµ: " + (float)_minEndTimeSort + UnitOfTime()
+                + "РњР°РєСЃРёРјР°Р»СЊРЅРѕРµ: " + (float)_maxEndTimeSort + UnitOfTime();
+            else _timeText.text = "Р’СЂРµРјСЏ: " + EndTimeSort + UnitOfTime()
+                + "РЎСЂРµРґРЅРµРµ: " + _totalEndTimeSort / _countSort + UnitOfTime()
+                + "РњРёРЅРёРјР°Р»СЊРЅРѕРµ: " + _minEndTimeSort + UnitOfTime()
+                + "РњР°РєСЃРёРјР°Р»СЊРЅРѕРµ: " + _maxEndTimeSort + UnitOfTime();
         }
         else
         {
-            _permutationText.text = "Перестановки: " + CountPermutation;
-            if (_realTime.isOn) _timeText.text = "Время: " + (float)EndTimeSort + UnitOfTime() + "Среднее: Н/Д\nМинимальное: Н/Д\nМаксимальное: Н/Д";
-            else _timeText.text = "Время: " + EndTimeSort + UnitOfTime() + "Среднее: Н/Д\nМинимальное: Н/Д\nМаксимальное: Н/Д";
+            _permutationText.text = "РџРµСЂРµСЃС‚Р°РЅРѕРІРєРё: " + CountPermutation;
+            if (_realTime.isOn) _timeText.text = "Р’СЂРµРјСЏ: " + (float)EndTimeSort + UnitOfTime() + "РЎСЂРµРґРЅРµРµ: Рќ/Р”\nРњРёРЅРёРјР°Р»СЊРЅРѕРµ: Рќ/Р”\nРњР°РєСЃРёРјР°Р»СЊРЅРѕРµ: Рќ/Р”";
+            else _timeText.text = "Р’СЂРµРјСЏ: " + EndTimeSort + UnitOfTime() + "РЎСЂРµРґРЅРµРµ: Рќ/Р”\nРњРёРЅРёРјР°Р»СЊРЅРѕРµ: Рќ/Р”\nРњР°РєСЃРёРјР°Р»СЊРЅРѕРµ: Рќ/Р”";
         }
         CountPermutation = 0;
     }
 
     public void ResetStatistic()
     {
-        _permutationText.text = "Перестановки: 0";
-        _timeText.text = "Время: Н/Д\nСреднее: Н/Д\nМинимальное: Н/Д\nМаксимальное: Н/Д";
+        _permutationText.text = "РџРµСЂРµСЃС‚Р°РЅРѕРІРєРё: 0";
+        _timeText.text = "Р’СЂРµРјСЏ: Рќ/Р”\nРЎСЂРµРґРЅРµРµ: Рќ/Р”\nРњРёРЅРёРјР°Р»СЊРЅРѕРµ: Рќ/Р”\nРњР°РєСЃРёРјР°Р»СЊРЅРѕРµ: Рќ/Р”";
 
         ResetStats();
     }
-
+    //=============================================================Buttons=============================================================
     public void AvailableButtons()
     {
         _sortb.enabled = true;
@@ -234,42 +240,62 @@ public class GeneralSettings : MonoBehaviour
         _type.enabled = false;
         _stopb.enabled = true;
     }
-
+    //=============================================================File of Results=============================================================
     private void ClearStatisticFile()
     {
-        File.WriteAllText("C:/Users/" + Environment.UserName + "/Desktop/Statistic.txt", _typeSort.options[_typeSort.value].text + " " + DateTime.Now);
-    }
-
-    private void WriteStatistic(int i)
-    {
-        _statistic = "\n" + _sizeMas + " " + _type.options[i].text + "\nВсего времени: " + _totalEndTimeSort + UnitOfTime()
-        + "Среднее: " + (_totalEndTimeSort / _countSort) + UnitOfTime()
-        + "Минимальное: " + _minEndTimeSort + UnitOfTime()
-        + "Максимальное: " + _maxEndTimeSort + UnitOfTime()
-        + "\nВсего перестановок: " + _totalCountPermutation + "\nМинимальное: " + _minCountPermutation + "\nМаксимальное: " + _maxCountPermutation
-        + "\n\n=============================================\n";
+        tw = new StreamWriter(_pathResult, false, System.Text.Encoding.GetEncoding(65001));
+        tw.WriteLine(_countTests.options[_countTests.value].text + " С‚РµСЃС‚РѕРІ;" + _typeSort.options[_typeSort.value].text + ";" + DateTime.Now);
+        tw.WriteLine("Р Р°Р·РјРµСЂ/РҐ-РєРё; Р’СЃРµРіРѕ РІСЂРµРјРµРЅРё (РЅСЃ); РЎСЂРµРґРЅРµРµ РІСЂРµРјСЏ (РЅСЃ); РњРёРЅРёРјР°Р»СЊРЅРѕРµ РІСЂРµРјСЏ (РЅСЃ); РњР°РєСЃРёРјР°Р»СЊРЅРѕРµ РІСЂРµРјСЏ (РЅСЃ); Р’СЃРµРіРѕ РїРµСЂРµСЃС‚Р°РЅРѕРІРѕРє; РњРёРЅРёРјР°Р»СЊРЅРѕРµ; РњР°РєСЃРёРјР°Р»СЊРЅРѕРµ");
+        tw.Close();
     }
 
     public void WriteStatisticFile(int i)
     {
-        WriteStatistic(i);
-        File.AppendAllText("C:/Users/" + Environment.UserName + "/Desktop/Statistic.txt", _statistic);
+        tw.WriteLine(_type.options[i].text + ";"
+            + _totalEndTimeSort + ";" + (_totalEndTimeSort / _countSort) + ";" + _minEndTimeSort + ";" + _maxEndTimeSort + ";"
+            + _totalCountPermutation + ";" + _minCountPermutation + ";" + _maxCountPermutation);
     }
 
+    public void OpenResults()
+    {
+        if (File.Exists(_pathResult)) System.Diagnostics.Process.Start(_pathResult);
+    }
+
+    private void CloseResults()
+    {
+        System.Diagnostics.Process[] file = System.Diagnostics.Process.GetProcessesByName("EXCEL.EXE");
+
+        if (file != null)
+        {
+            foreach (var p in file)
+            {
+                p.CloseMainWindow();
+                p.Close();
+            }
+            Thread.Sleep(300);
+        }
+    }
+    //=============================================================Tests=============================================================
     public void StartTest()
     {
-        ClearStatisticFile();
+        List<int> originArr = new(_arr);
+        Debug.Log("СЏ С‚СѓС‚");
 
+        CloseResults();
+        Debug.Log("РїСЂРѕС€С‘Р» CloseResults");
+        ClearStatisticFile();
+        Debug.Log("РїСЂРѕС€С‘Р» ClearStatisticFile");
+
+        tw = new StreamWriter(_pathResult, true, System.Text.Encoding.GetEncoding(65001));
         if (_typeSort.value == 0) TestHoar();
         else TestInsertion();
 
-        Results();
-        ResetStatistic();
-    }
+        Debug.Log("РїСЂРѕС€С‘Р» РўРµСЃС‚С‹");
+        OpenResults();
 
-    public void Results()
-    {
-        System.Diagnostics.Process.Start("C:/Users/" + Environment.UserName + "/Desktop/Statistic.txt");
+        _arr = new(originArr);
+        tw.Close(); ResetStatistic();
+        _sizeMas = _arr.Count; UpdateGraph();
     }
 
     private void UpdateSize(int i)
@@ -323,6 +349,7 @@ public class GeneralSettings : MonoBehaviour
         for (int i = 0; i < 6; ++i)
         {
             UpdateSize(i);
+            tw.WriteLine(_sizeMas);
             for (int j = 0; j < 3; ++j)
             {
                 ResetStats();
@@ -335,6 +362,7 @@ public class GeneralSettings : MonoBehaviour
                 }
                 WriteStatisticFile(j);
             }
+            tw.WriteLine("");
         }
     }
 
@@ -343,6 +371,7 @@ public class GeneralSettings : MonoBehaviour
         for (int i = 0; i < 4; ++i)
         {
             UpdateSize(i);
+            tw.WriteLine(_sizeMas);
             for (int j = 0; j < 3; ++j)
             {
                 ResetStats();
@@ -354,9 +383,10 @@ public class GeneralSettings : MonoBehaviour
                 }
                 WriteStatisticFile(j);
             }
+            tw.WriteLine("");
         }
     }
-
+    //=============================================================Author=============================================================
     public void OpenMe()
     {
         System.Diagnostics.Process.Start("https://github.com/Fallmore");
