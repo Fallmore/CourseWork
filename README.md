@@ -16,18 +16,18 @@ for Algorithms and structure of data for third term
 
 Программа имеет следующие функциональное ограничение: ввод осуществляется только нажатием левой кнопки мыши.
 
-Главное меню
+## Главное меню
 
 ![image](https://github.com/Fallmore/Research-of-Hoare-s-Sorting/assets/135610092/f5ea90ae-8228-493c-a10f-52b89ff84f5e)
 
-Интерфейс исследования
+## Интерфейс исследования
 
 ![image](https://github.com/Fallmore/Research-of-Hoare-s-Sorting/assets/135610092/f834b9a2-d80e-4066-888c-64680ec0ca35)
 
-Интерфейс исследования во время работы наглядной сортировки
+## Интерфейс исследования во время работы наглядной сортировки
 
 ![image](https://github.com/Fallmore/Research-of-Hoare-s-Sorting/assets/135610092/81a69697-ed86-464e-830a-5ab465df562c)
 
-Результат тестирования
+## Результат тестирования
 
 ![image](https://github.com/Fallmore/Research-of-Hoare-s-Sorting/assets/135610092/df1682e6-28f4-45a7-9b4a-9f18c9ad1d5e)
